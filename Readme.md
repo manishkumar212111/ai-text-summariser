@@ -124,8 +124,7 @@ async function safeSummarize(text: string) {
 ## Requirements
 
 - Node.js 14+
-- Active internet connection
-- Valid API access
+- Chrome v138+
 
 ## Error Handling
 
