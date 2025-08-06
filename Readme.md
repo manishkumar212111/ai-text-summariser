@@ -1,148 +1,81 @@
-# AI Text Summariser
+# ai-text-summariser
 
-A TypeScript wrapper for the Summarizer API with streaming support.
+`ai-text-summariser` is a **JavaScript wrapper** for the browser's `Summarizer` API, providing **streaming** and **non-streaming** AI-powered text summarization in a consistent, developer-friendly way.
 
-## Installation
+## ⚡ Quick Start
+
+```javascript
+import { Summariser } from 'ai-text-summariser';
+
+// Create summariser
+const summariser = new Summariser({
+  type: 'tldr',
+  format: 'plain-text'
+});
+
+// Check availability & summarize
+async function summarize(text) {
+  if (await summariser.checkAvailability()) {
+    const summary = await summariser.summarise(text);
+    console.log('Summary:', summary);
+  }
+}
+```
+
+## ✨ Features
+
+Supports:
+- **Types**: headline, key-points, teaser, tldr
+- **Formats**: plain-text, markdown
+- **Lengths**: short, medium, long
+- **Streaming** and **non-streaming** modes
+- Automatic **availability check**
+- Chrome **v138+ compatibility check**
+- Custom **progress monitoring** and **AbortController** support
+
+## 🚀 Installation
 
 ```bash
 npm install ai-text-summariser
 ```
 
-## API Reference
+## 🛠 Requirements
 
-### Configuration
+- **Node.js**: v14 or later
+- **Browser**: Latest version of Chrome, Firefox, or Safari
 
-```typescript
-interface SummariserConfig {
-  type?: 'headline' | 'key-points' | 'teaser' | 'tldr';
-  format?: 'plain-text' | 'markdown';
-  length?: 'short' | 'medium' | 'long';
-  expectedInputLanguages?: string[];
-  expectedContextLanguages?: string[];
-  outputLanguage?: string;
-  streaming?: boolean;
-  sharedContext?: string | null;
-}
+## 📦 Usage
+
+### ESM Import
+```javascript
+import { Summariser } from 'ai-text-summariser';
 ```
 
-### Methods
-
-- `checkAvailability()`: Checks if the API is available
-- `summarise(text: string, context?: string)`: Synchronous summarization
-- `summariseStream(text: string, context?: string)`: Streaming summarization
-- `abort()`: Cancels ongoing summarization
-
-## Usage Examples
-
-### Basic Usage (JavaScript)
-
+### CommonJS Require
 ```javascript
 const { Summariser } = require('ai-text-summariser');
-
-// Create a basic summariser with default settings
-const summariser = new Summariser();
-
-async function summarizeText() {
-  try {
-    const result = await summariser.summarise('Your text here');
-    console.log(result);
-  } catch (error) {
-    console.error('Summarization failed:', error.message);
-  }
-}
 ```
 
-### Advanced Usage (TypeScript)
-
-```typescript
-import { Summariser, SummariserConfig } from 'ai-text-summariser';
-
-const config: SummariserConfig = {
-  type: 'key-points',
-  format: 'markdown',
-  length: 'medium',
-  expectedInputLanguages: ['en', 'es'],
-  outputLanguage: 'en',
-  streaming: false
-};
-
-const summariser = new Summariser(config);
-
-// With shared context
-const context = "This is background information that helps with summarization";
-const result = await summariser.summarise('Your text here', context);
-```
-
-### Streaming Example with Error Handling
-
-```typescript
-const streamingSummariser = new Summariser({
-  type: 'tldr',
+### Basic Example
+```javascript
+const summariser = new Summariser({
+  type: 'headline',
   format: 'plain-text',
-  streaming: true
+  length: 'short'
 });
 
 try {
-  // Check API availability before starting
-  await streamingSummariser.checkAvailability();
-
-  for await (const chunk of streamingSummariser.summariseStream('Your text here')) {
-    process.stdout.write(chunk);
-    
-    // To cancel the stream at any point
-    // streamingSummariser.abort();
-  }
+  const summary = await summariser.summarise('Your text here');
+  console.log(summary);
 } catch (error) {
-  console.error('Streaming failed:', error.message);
+  console.error('Summarization failed:', error.message);
 }
 ```
 
-### With Custom Error Handling
+## 🤝 Contributing
 
-```typescript
-import { Summariser, SummariserError } from 'ai-text-summariser';
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-async function safeSummarize(text: string) {
-  const summariser = new Summariser();
-  
-  try {
-    await summariser.checkAvailability();
-    return await summariser.summarise(text);
-  } catch (error) {
-    if (error instanceof SummariserError) {
-      // Handle specific summariser errors
-      console.error('Summariser error:', error.message);
-    } else {
-      // Handle other errors
-      console.error('Unexpected error:', error);
-    }
-    throw error;
-  }
-}
-```
+## 📄 License
 
-## Requirements
-
-- Node.js 14+
-- Chrome v138+
-
-## Error Handling
-
-The package throws `SummariserError` for:
-- Service unavailability
-- Invalid configuration
-- Failed summarization attempts
-
-Best practice is to always check availability before using the service:
-
-```typescript
-const summariser = new Summariser();
-
-try {
-  // Always check availability first
-  await summariser.checkAvailability();
-  const result = await summariser.summarise('Your text here');
-} catch (error) {
-  console.error('Service error:', error.message);
-}
-```
+MIT © [Manish Kumar](https://github.com/manishkumar212111)
