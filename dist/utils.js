@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.detectBrowser = void 0;
-function detectBrowser() {
+export function detectBrowser() {
     if (typeof window === 'undefined') {
         return { name: 'node', version: 0 };
     }
@@ -20,4 +17,4 @@ function detectBrowser() {
         return { name: 'safari', version: parseInt(match[1]) };
     return { name: 'unknown', version: 0 };
 }
-exports.detectBrowser = detectBrowser;
+//# sourceMappingURL=utils.js.map
