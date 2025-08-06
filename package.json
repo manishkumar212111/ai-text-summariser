@@ -1,6 +1,6 @@
 {
   "name": "ai-text-summariser",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "TypeScript wrapper for Summarizer API with streaming support",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
