@@ -304,3 +304,5 @@ export class Summariser {
 }
 
 export default Summariser;
+
+export { Summariser };
