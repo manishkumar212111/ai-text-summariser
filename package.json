@@ -1,0 +1,26 @@
+{
+  "name": "ai-text-summariser",
+  "version": "1.0.0",
+  "description": "TypeScript wrapper for Summarizer API with streaming support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": ["ai", "summarizer", "text", "streaming"],
+  "author": "Manish Kumar",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^16.0.0",
+    "typescript": "^4.5.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
