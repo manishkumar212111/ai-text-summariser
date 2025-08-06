@@ -1,6 +1,6 @@
 {
   "name": "ai-text-summariser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TypeScript wrapper for Summarizer API with streaming support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,6 +9,14 @@
     "require": "./dist/index.js",
     "types": "./dist/index.d.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manishkumar212111/ai-text-summariser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/manishkumar212111/ai-text-summariser/issues"
+  },
+  "homepage": "https://github.com/manishkumar212111/ai-text-summariser#readme",
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build"
