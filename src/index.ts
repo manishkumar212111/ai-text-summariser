@@ -11,7 +11,23 @@
 
 /* eslint-disable no-console */
 
-const DEFAULTS = {
+interface SummarizerConfig {
+  type: string;
+  format: string;
+  length: string;
+  sharedContext?: string | null;
+  expectedInputLanguages?: string[];
+  expectedContextLanguages?: string[];
+  outputLanguage?: string;
+  monitor?: (monitor: any) => void;
+  signal?: AbortSignal | null;
+}
+
+interface DefaultConfig extends SummarizerConfig {
+  streaming: boolean;
+}
+
+const DEFAULTS: DefaultConfig = {
   type: "headline",
   format: "plain-text",
   length: "medium",
@@ -21,7 +37,7 @@ const DEFAULTS = {
   streaming: false,
   sharedContext: null,
   // optional monitor callback: (monitor) => void
-  monitor: null,
+  monitor: () => {},
   signal: null
 };
 
@@ -31,18 +47,18 @@ const VALID = {
   lengths: ["short", "medium", "long"]
 };
 
-function isBrowser() {
+function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof navigator !== "undefined";
 }
 
-function chromeVersionFromUA(ua) {
+function chromeVersionFromUA(ua: string): number | null {
   // Example UA: "Mozilla/5.0 (...) Chrome/138.0.0.0 Safari/..."
   const m = ua.match(/Chrom(?:e|ium)\/(\d+)\./i);
   if (!m) return null;
   return parseInt(m[1], 10);
 }
 
-function ensureChrome138OrHigher() {
+function ensureChrome138OrHigher(): void {
   if (!isBrowser()) return; // allow Node usage for tests — skip strict check
   const ua = navigator.userAgent || "";
   const v = chromeVersionFromUA(ua);
@@ -54,7 +70,7 @@ function ensureChrome138OrHigher() {
   }
 }
 
-function validateConfig(cfg) {
+function validateConfig(cfg: DefaultConfig): void {
   if (!VALID.types.includes(cfg.type)) {
     throw new Error(
       `Invalid type "${cfg.type}". Supported: ${VALID.types.join(", ")}.`
@@ -72,7 +88,7 @@ function validateConfig(cfg) {
   }
 }
 
-function mergeConfig(userCfg = {}) {
+function mergeConfig(userCfg: Partial<DefaultConfig> = {}): DefaultConfig {
   return Object.assign({}, DEFAULTS, userCfg);
 }
 
@@ -80,7 +96,7 @@ function mergeConfig(userCfg = {}) {
  * Convert a ReadableStream (browser) to an async iterator yielding strings.
  * If the Summarizer already returns an async iterable, we pass it through.
  */
-async function *streamToAsyncIterator(maybeStream) {
+async function* streamToAsyncIterator(maybeStream: any): AsyncGenerator<string> {
   // if it's already async iterable
   if (maybeStream && typeof maybeStream[Symbol.asyncIterator] === "function") {
     for await (const chunk of maybeStream) {
@@ -112,12 +128,23 @@ async function *streamToAsyncIterator(maybeStream) {
   throw new Error("Unsupported stream type returned by Summarizer.");
 }
 
+export class SummariserError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'SummariserError';
+  }
+}
+
 export class Summariser {
+  private config: DefaultConfig;
+  private _summarizerInstance: any | null;
+  private _userSignal: AbortSignal | null;
+
   /**
    * Create a new Summariser wrapper.
    * @param {Object} config - config props (see README/USAGE)
    */
-  constructor(config = {}) {
+  constructor(config: Partial<DefaultConfig> = {}) {
     this.config = mergeConfig(config);
     validateConfig(this.config);
     this._summarizerInstance = null;
@@ -129,7 +156,7 @@ export class Summariser {
    * Do a lightweight compatibility check and probe Summarizer availability.
    * Returns true if available; throws descriptive Error if Summarizer API is missing.
    */
-  async checkAvailability() {
+  async checkAvailability(): Promise<boolean> {
     // browser requirement
     try {
       ensureChrome138OrHigher();
@@ -174,7 +201,7 @@ export class Summariser {
    * Create internal Summarizer instance if needed.
    * This uses Summarizer.create which supports monitor & signal.
    */
-  async _createInstanceIfNeeded() {
+  private async _createInstanceIfNeeded(): Promise<any> {
     if (this._summarizerInstance) return this._summarizerInstance;
     if (typeof globalThis.Summarizer === "undefined") {
       throw new Error("Summarizer API not available in this environment.");
@@ -212,7 +239,7 @@ export class Summariser {
    * @param {string} text
    * @param {string} [context]
    */
-  async summarise(text, context = "") {
+  async summarise(text: string, context: string = ''): Promise<string> {
     if (typeof text !== "string" || text.trim() === "") {
       throw new Error("`text` must be a non-empty string.");
     }
@@ -262,7 +289,7 @@ export class Summariser {
    * @param {string} text
    * @param {string} [context]
    */
-  async *summariseStream(text, context = "") {
+  async *summariseStream(text: string, context: string = ''): AsyncGenerator<string> {
     if (typeof text !== "string" || text.trim() === "") {
       throw new Error("`text` must be a non-empty string.");
     }
@@ -304,5 +331,4 @@ export class Summariser {
 }
 
 export default Summariser;
-
-export { Summariser };
+export type { SummarizerConfig, DefaultConfig };
