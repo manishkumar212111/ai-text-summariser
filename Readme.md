@@ -13,13 +13,13 @@ Supports:
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ```bash
 npm install ai-text-summariser
 ```
 
-## 🛠 Requirements
+## Requirements
 
 - **Browser**: Chrome v138 or newer
   (due to dependency on the built-in Summarizer API introduced in Chrome 138)
@@ -30,7 +30,7 @@ npm install ai-text-summariser
   - `chrome://flags/#enable-ai-features`
   - `chrome://flags/#summarizer-api`
 
-## 📦 Importing
+## Importing
 
 ```js
 import Summariser from 'ai-text-summariser';
@@ -38,7 +38,7 @@ import Summariser from 'ai-text-summariser';
 const Summariser = require('ai-text-summariser').default;
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 The constructor accepts a config object:
 
@@ -60,7 +60,7 @@ The constructor accepts a config object:
 ### Defaults
 If you omit a property, the default will be applied automatically.
 
-## 📋 API Reference
+## API Reference
 
 ### Class: Summariser
 
@@ -78,7 +78,7 @@ Performs non-streaming summarisation and returns the full result as a string.
 #### `async *summariseStream(text: string, context?: string): AsyncIterable<string>`
 Performs streaming summarisation, yielding chunks as they arrive.
 
-## 📄 Example Usage
+## Example Usage
 
 ### 1. Non-streaming headline
 
@@ -156,7 +156,7 @@ const summariser = new Summariser({
 setTimeout(() => abortController.abort(), 2000); // cancel after 2s
 ```
 
-## 🔍 Availability Check
+## Availability Check
 
 Before calling `summarise` or `summariseStream`, always do:
 
@@ -172,7 +172,7 @@ If the API is not available, you can:
 - Use a server-based summarisation API
 - Ask user to upgrade Chrome to v138+
 
-## ⚠️ Error Handling
+## Error Handling
 
 `ai-text-summariser` throws descriptive errors for:
 - **Invalid config**: Unsupported type, format, length
@@ -190,7 +190,7 @@ try {
 }
 ```
 
-## 📌 Chrome v138+ Requirement
+## Chrome v138+ Requirement
 
 `ai-text-summariser` will not work in:
 - Older versions of Chrome (<138)
@@ -201,7 +201,7 @@ To check your Chrome version:
 1. Go to `chrome://version/`
 2. Ensure "Google Chrome" shows 138.x.x.x or newer.
 
-## 📚 Further Notes
+## Further Notes
 
 - **For developers**: This package assumes a modern JS environment and does not polyfill the Summarizer API.
 - **For Node.js**: You can import and use `checkAvailability()` and config validation, but summarisation methods require a browser.
